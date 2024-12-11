@@ -1,30 +1,35 @@
 <?php
-  namespace app\database\connection;
-  
-  use PDO;
-  use PDOException;
 
-  class Connection
+namespace app\database\connection;
+
+use PDO;
+use PDOException;
+
+class Connection
+{
+  private static $pdo = null;
+
+  public static function connect()
   {
-    public static $pdo = null;
-
-    public static function connect()
+    try
     {
-      try 
+      if(!static::$pdo)
       {
-        if(!static::$pdo)
-        {
-          static::$pdo = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME']."", $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
-          ]);
-        }
-        
-        return static::$pdo;
+        $host = DB['HOST'];
+        $port = DB['PORT'] ? ':'.DB['PORT'] : '';
+        $name = DB['NAME'];
+        $username = DB['USERNAME'];
+        $password = DB['PASSWORD'];
+        $options = DB['OPTIONS'];
+
+        static::$pdo = new PDO("mysql:host={$host}{$port};dbname={$name}", $username, $password, $options);
       }
-      catch(PDOException $e)
-      {
-        var_dump($e->getMessage());
-      }
+
+      return static::$pdo;
+    }
+    catch(PDOException $e)
+    {
+      var_dump($e->getMessage());
     }
   }
+}

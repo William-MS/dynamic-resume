@@ -1,27 +1,14 @@
-window.onload = ()=>
+if('serviceWorker' in navigator)
 {
-  const projects = document.querySelectorAll('.project');
-
-  projects.forEach((project)=>
+  window.addEventListener('load', ()=>
   {
-    let projectThumb = project.querySelector('.project-thumb');
-    let projectModal = project.querySelector('.project-modal');
-    let btnCloseModal = project.querySelector('.project-modal-close');
-
-    projectThumb.addEventListener('click', ()=>
+    navigator.serviceWorker.register('/sw.js')
+    .then((reg) =>
     {
-      if(!projectModal.classList.contains('modal-show'))
-      {
-        projectModal.classList.add('modal-show');
-      }
-    })
-
-    btnCloseModal.addEventListener('click', ()=>
+      console.log('Registrado nosso primeiro service work', reg);
+    }).catch((err) =>
     {
-      if(projectModal.classList.contains('modal-show'))
-      {
-        projectModal.classList.remove('modal-show');
-      }
-    })
-  })
+      console.log('Algo de errado aconteceu', err);
+    });
+  });
 }

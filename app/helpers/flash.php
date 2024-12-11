@@ -1,12 +1,14 @@
 <?php
-  use app\classes\helpers\Flash;
 
-  function flash($key)
+use app\library\helpers\Flash;
+
+function flash(string $field, ?string $alert = 'danger')
+{
+  $flash = Flash::get($field);
+
+  if(isset($flash))
   {
-    $flash = Flash::get($key);
-
-    if(isset($flash))
-    {
-      return "<span class='alert alert-{$flash['alert']}'>{$flash['message']}</span>";
-    }
+    $flash['alert'] = $alert;
+    return Flash::make_component($flash);
   }
+}

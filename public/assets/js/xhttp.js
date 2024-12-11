@@ -1,48 +1,48 @@
 var xhttp = new XMLHttpRequest;
 
-function xmlHttpGet(url, callback, parameters='')
+function xmlHttpGet(uri, callback, params = '')
 {
   xhttp.onreadystatechange = callback;
 
-  xhttp.open('GET', url + '.php' + parameters, true);
+  xhttp.open('GET', uri + params, true);
   xhttp.send();
 }
 
-
-function xmlHttpPost(url, callback, parameters='')
+function xmlHttpPost(uri, callback, params = '')
 {
   xhttp.onreadystatechange = callback;
 
-  xhttp.open('POST', url + '.php', true);
-
-  if(typeof(parameters) != 'object')
-  {
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  }
-
-  xhttp.send(parameters);
+  xhttp.open('POST', uri, true);
+  xhttp.send(params);
 }
 
+// function xmlHttpPut()
+// {
+  
+// }
+
+// function xmlHttpDelete()
+// {
+  
+// }
 
 function beforeSend(callback)
 {
-  if( xhttp.readyState < 4)
+  if(xhttp.readyState < 4)
   {
-    callback();
+    return callback();
   }
 }
-
 
 function success(callback)
 {
   if(xhttp.readyState == 4 && xhttp.status == 200)
   {
-    callback();
+    return callback();
   }
 }
 
-
 function error(callback)
 {
-  xhttp.onerror = callback();
+  xhttp.onerror = callback;
 }

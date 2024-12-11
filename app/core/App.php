@@ -1,52 +1,26 @@
 <?php
-  namespace app\core;
 
-use app\interfaces\AppInterface;
-use app\interfaces\ControllerInterface;
-use Exception;
+namespace app\core;
 
-  class App
+class App
+{
+  private string $uri;
+  private object $route;
+
+  public function route()
   {
-    private ControllerInterface $controller;
-    private $appInterface;
+    require_once('../app/routes/routes.php');
 
-    public function __construct(AppInterface $appInterface)
-    {
-      $this->appInterface = $appInterface;
-    }
-
-    public function controller()
-    {
-      $controller = $this->appInterface->controller();
-      $method = $this->appInterface->method($controller);
-      $params = $this->appInterface->params();
-
-      $this->controller = new $controller;
-      $this->controller->$method($params);
-    }
-
-    public function view()
-    {
-      if($_SERVER['REQUEST_METHOD'] === 'GET')
-      {
-        $view = View::view();
-
-        if(!isset($view) or $view === '')
-        {
-          return;
-        }
-
-        $data = View::data();
-
-        extract($data);
-
-        (isset($extends))
-        ? $file = include_extends($extends, $data)
-        : $file = ROOT.VIEW_PATH. $view .'.php';
-
-        (file_exists($file))
-        ? require_once($file)
-        : throw new Exception("A view {$view} não foi encontrada! em app/views/");
-      }
-    }
+    $this->uri = UriExtract::extract();
+    $this->route = RouteExtract::extract($this->uri);
   }
+
+  public function controller()
+  {
+    $controller = ControllerExtract::extract($this->route->controller);
+    $method = MethodExtract::extract($controller, $this->route->method);
+    $params = ParamsExtract::extract($this->uri, $this->route->uri);
+
+    return (new $controller)->$method($params);
+  }
+}
